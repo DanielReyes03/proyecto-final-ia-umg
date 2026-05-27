@@ -19,7 +19,7 @@ create table if not exists users (
 create table if not exists connections (
   id               uuid primary key default gen_random_uuid(),
   name             text not null,
-  type             text not null check (type in ('postgresql', 'sqlserver', 'rest_api')),
+  type             text not null check (type in ('postgresql', 'sqlserver', 'rest_api', 'knowledge_base')),
   icon_name        text not null default 'database',
   config_encrypted text not null,
   is_active        boolean not null default true,

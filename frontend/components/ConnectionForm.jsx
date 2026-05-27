@@ -7,6 +7,7 @@ const defaultConfigs = {
   postgresql: { host: '', port: '5432', database: '', user: '', password: '' },
   sqlserver: { host: '', port: '1433', database: '', user: '', password: '', instance: '' },
   rest_api: { base_url: '', default_headers: '{}' },
+  knowledge_base: { description: '' },
 }
 
 export default function ConnectionForm({ existing, onClose, onSaved }) {
@@ -66,13 +67,18 @@ export default function ConnectionForm({ existing, onClose, onSaved }) {
           <div>
             <label className={labelCls}>Tipo de conexión</label>
             <div className="flex gap-2">
-              {['postgresql', 'sqlserver', 'rest_api'].map((t) => (
+              {[
+                ['postgresql', 'PostgreSQL'],
+                ['sqlserver', 'SQL Server'],
+                ['rest_api', 'REST API'],
+                ['knowledge_base', 'Base de Conocimiento'],
+              ].map(([t, label]) => (
                 <button key={t} type="button"
                   onClick={() => { setType(t); setConfig(defaultConfigs[t]) }}
                   className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-all ${
                     type === t ? 'bg-blue-600 border-blue-500 text-white' : 'bg-transparent border-white/10 text-gray-400 hover:border-white/20'
                   }`}>
-                  {t === 'postgresql' ? 'PostgreSQL' : t === 'sqlserver' ? 'SQL Server' : 'REST API'}
+                  {label}
                 </button>
               ))}
             </div>
@@ -116,6 +122,19 @@ export default function ConnectionForm({ existing, onClose, onSaved }) {
                   placeholder='{"Authorization": "Bearer token"}' value={config.default_headers}
                   onChange={(e) => setField('default_headers', e.target.value)} /></div>
             </>
+          )}
+
+          {type === 'knowledge_base' && (
+            <div>
+              <label className={labelCls}>Descripción (opcional)</label>
+              <textarea className={`${inputCls} resize-none`} rows={3}
+                placeholder="Ej: Políticas de RRHH, manuales operativos, reportes internos…"
+                value={config.description}
+                onChange={(e) => setField('description', e.target.value)} />
+              <p className="text-[11px] text-gray-600 mt-1.5">
+                Los documentos se suben desde el tab RAG del panel de administración.
+              </p>
+            </div>
           )}
 
           <div className="flex items-center justify-between pt-1">

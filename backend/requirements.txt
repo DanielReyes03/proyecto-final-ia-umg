@@ -6,7 +6,7 @@ pydantic>=2.10.0
 # Auth
 pyjwt>=2.8.0
 passlib[bcrypt]>=1.7.4
-bcrypt==3.2.2   # passlib 1.7.4 no es compatible con bcrypt 4.x
+bcrypt>=4.0.1   # chromadb requiere >=4.0.1; compatibilidad con passlib via patch en main.py
 
 # LLM (modelo-agnóstico) — httpx lo resuelve litellm
 litellm>=1.55.8
@@ -23,3 +23,10 @@ httpx>=0.23.0,<0.29.0
 
 # Encryption
 cryptography>=43.0.0
+
+# RAG
+python-multipart>=0.0.9
+chromadb>=0.6.0
+pdfplumber>=0.11.0
+python-docx>=1.1.0
+openpyxl>=3.1.0

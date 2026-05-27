@@ -71,7 +71,12 @@ def chat(body: ChatRequest, user: dict = Depends(get_current_user)):
         logger.info(f"  Tools construidas: {list(executor_map.keys())}")
 
         # Mapa tool_name → nombre amigable de la conexión (para mostrar en el frontend)
-        _prefix = {"postgresql": "query_postgresql_", "sqlserver": "query_sqlserver_", "rest_api": "call_rest_api_"}
+        _prefix = {
+            "postgresql": "query_postgresql_",
+            "sqlserver": "query_sqlserver_",
+            "rest_api": "call_rest_api_",
+            "knowledge_base": "search_knowledge_base_",
+        }
         tool_display_names = {
             f"{_prefix.get(c['type'], '')}{c['id'].replace('-', '_')}": c["name"]
             for c in active_connections if c["type"] in _prefix

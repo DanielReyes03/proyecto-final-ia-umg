@@ -145,6 +145,11 @@ Si no tienes suficiente información para responder, pídela.
 - SIEMPRE usa JOIN para columnas de otra tabla; nunca las referencíes sin JOIN
 - Columnas en snake_case igual que PostgreSQL
 
+### Base de Conocimiento (RAG):
+- Recibe fragmentos de documentos internos de la empresa como resultado.
+- Cita el nombre del documento fuente cuando uses información de la base de conocimiento.
+- Si no encuentra información relevante, dilo y responde con lo que sabes.
+
 ## PATRONES SQL CORRECTOS
 
 ### Ventas por producto — PostgreSQL:
