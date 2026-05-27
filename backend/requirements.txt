@@ -1,0 +1,25 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-dotenv>=1.0.0
+pydantic>=2.10.0
+
+# Auth
+pyjwt>=2.8.0
+passlib[bcrypt]>=1.7.4
+bcrypt==3.2.2   # passlib 1.7.4 no es compatible con bcrypt 4.x
+
+# LLM (modelo-agnóstico) — httpx lo resuelve litellm
+litellm>=1.55.8
+
+# Supabase
+supabase>=2.10.0
+
+# Databases
+psycopg2-binary>=2.9.9
+pyodbc>=5.0.0
+
+# HTTP client — rango compatible con litellm
+httpx>=0.23.0,<0.29.0
+
+# Encryption
+cryptography>=43.0.0

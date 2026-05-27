@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0f0f0f] text-white antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .prose-dark {
+    @apply prose prose-invert prose-sm max-w-none;
+  }
+  .prose-dark table { @apply text-xs; }
+  .prose-dark th { @apply bg-white/10 text-white font-semibold px-3 py-2; }
+  .prose-dark td { @apply border-white/10 px-3 py-2; }
+  .prose-dark code { @apply bg-white/10 text-blue-300 px-1 rounded text-xs; }
+  .prose-dark pre { @apply bg-black/40 rounded-lg; }
+}

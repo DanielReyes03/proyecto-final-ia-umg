@@ -1,0 +1,54 @@
+services:
+
+  # ── PostgreSQL 16 — Northwind ──────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: gerente_ia_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: northwind
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d northwind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── SQL Server 2022 — Northwind ────────────────────────────────────────────
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gerente_ia_sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Admin1234!"
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./docker/sqlserver/northwind.sql:/tmp/northwind.sql:ro
+      - ./docker/sqlserver/init.sh:/tmp/init.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Admin1234!' -Q 'SELECT 1' -No -C || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    command: >
+      bash -c "
+        /opt/mssql/bin/sqlservr &
+        sleep 30 &&
+        /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Admin1234!' -i /tmp/northwind.sql -No -C &&
+        wait
+      "
+
+volumes:
+  postgres_data:
+  sqlserver_data:
