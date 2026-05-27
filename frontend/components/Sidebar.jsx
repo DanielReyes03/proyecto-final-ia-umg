@@ -1,11 +1,22 @@
 'use client'
-import { Plus, MessageSquare, Settings } from 'lucide-react'
+import { useState } from 'react'
+import { Plus, MessageSquare, Settings, Trash2 } from 'lucide-react'
 import ConnectionCard from './ConnectionCard'
 
 export default function Sidebar({
-  conversations, currentConvId, onSelectConv, onNewConv,
+  conversations, currentConvId, onSelectConv, onNewConv, onDeleteConv,
   connections, activeIds, onToggleConnection, user, onAdminClick,
 }) {
+  const [hoveredId, setHoveredId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
+
+  const handleDelete = async (e, convId) => {
+    e.stopPropagation()
+    if (!window.confirm('¿Eliminar esta conversación?')) return
+    setDeletingId(convId)
+    try { await onDeleteConv(convId) }
+    finally { setDeletingId(null) }
+  }
   return (
     <aside className="flex flex-col h-full bg-[#1a1a1a] border-r border-white/[0.08] w-64 shrink-0">
       {/* Brand */}
@@ -39,13 +50,31 @@ export default function Sidebar({
           <p className="text-center text-gray-600 text-xs mt-4 px-2">Sin conversaciones aún</p>
         )}
         {conversations.map((c) => (
-          <button key={c.id} onClick={() => onSelectConv(c.id)}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors mb-0.5 ${
-              currentConvId === c.id ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
-            }`}>
-            <MessageSquare size={13} className="shrink-0" />
-            <span className="truncate">{c.title}</span>
-          </button>
+          <div
+            key={c.id}
+            className="relative mb-0.5"
+            onMouseEnter={() => setHoveredId(c.id)}
+            onMouseLeave={() => setHoveredId(null)}
+          >
+            <button
+              onClick={() => onSelectConv(c.id)}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors pr-8 ${
+                currentConvId === c.id ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <MessageSquare size={13} className="shrink-0" />
+              <span className="truncate">{c.title}</span>
+            </button>
+            {(hoveredId === c.id || deletingId === c.id) && (
+              <button
+                onClick={(e) => handleDelete(e, c.id)}
+                disabled={deletingId === c.id}
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                <Trash2 size={13} />
+              </button>
+            )}
+          </div>
         ))}
       </div>
 

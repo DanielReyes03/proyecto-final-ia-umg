@@ -109,6 +109,11 @@ def update_conversation_title(conv_id: str, title: str) -> None:
     sb.table("conversations").update({"title": title, "updated_at": "now()"}).eq("id", conv_id).execute()
 
 
+def delete_conversation(conv_id: str) -> None:
+    sb = get_client()
+    sb.table("conversations").delete().eq("id", conv_id).execute()
+
+
 # ── Messages ───────────────────────────────────────────────────────────────────
 
 def get_messages(conv_id: str) -> list[dict]:

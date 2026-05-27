@@ -5,10 +5,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Monkey-patch: passlib 1.7.4 no es compatible con bcrypt 4.x+ de dos formas:
+# 1) Busca __about__.__version__ que ya no existe.
+# 2) Su detect_wrap_bug() pasa una contraseña de 73 bytes, que bcrypt 4.x rechaza.
+# Este parche corrige ambos problemas sin cambiar el comportamiento real de hashing.
+import bcrypt as _bcrypt
+if not hasattr(_bcrypt, '__about__'):
+    _bcrypt.__about__ = type('_about', (), {'__version__': _bcrypt.__version__})()
+_orig_hashpw = _bcrypt.hashpw
+def _patched_hashpw(password, salt):
+    if isinstance(password, (bytes, bytearray)) and len(password) > 72:
+        password = password[:72]
+    return _orig_hashpw(password, salt)
+_bcrypt.hashpw = _patched_hashpw
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import auth, connections, chat
+from routers import auth, connections, chat, documents
 
 # ── Logging visible en consola ──────────────────────────────────────────────
 logging.basicConfig(
@@ -51,6 +65,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(auth.router)
 app.include_router(connections.router)
 app.include_router(chat.router)
+app.include_router(documents.router)
 
 
 @app.get("/")

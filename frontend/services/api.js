@@ -57,8 +57,29 @@ export const sendMessage = (message, conversationId, activeConnectionIds) =>
 export const getConversations = () =>
   api.get('/chat/conversations').then((r) => r.data)
 
+export const deleteConversation = (convId) =>
+  api.delete(`/chat/conversations/${convId}`).then((r) => r.data)
+
 export const getMessages = (convId) =>
   api.get(`/chat/conversations/${convId}/messages`).then((r) => r.data)
 
 export const getToolLogs = (params = {}) =>
   api.get('/chat/logs', { params }).then((r) => r.data)
+
+// ── RAG / Knowledge Base ────────────────────────────────────────────────────
+
+export const getDocuments = (connId) =>
+  api.get(`/documents/${connId}`).then((r) => r.data)
+
+export const uploadDocument = (connId, file, onUploadProgress) => {
+  const form = new FormData()
+  form.append('file', file)
+  return api.post(`/documents/${connId}/upload`, form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress,
+    timeout: 300_000, // 5 min — embedding puede tardar
+  }).then((r) => r.data)
+}
+
+export const deleteDocument = (connId, filename) =>
+  api.delete(`/documents/${connId}/${encodeURIComponent(filename)}`).then((r) => r.data)

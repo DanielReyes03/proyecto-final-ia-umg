@@ -71,7 +71,12 @@ def chat(body: ChatRequest, user: dict = Depends(get_current_user)):
         logger.info(f"  Tools construidas: {list(executor_map.keys())}")
 
         # Mapa tool_name → nombre amigable de la conexión (para mostrar en el frontend)
-        _prefix = {"postgresql": "query_postgresql_", "sqlserver": "query_sqlserver_", "rest_api": "call_rest_api_"}
+        _prefix = {
+            "postgresql": "query_postgresql_",
+            "sqlserver": "query_sqlserver_",
+            "rest_api": "call_rest_api_",
+            "knowledge_base": "search_knowledge_base_",
+        }
         tool_display_names = {
             f"{_prefix.get(c['type'], '')}{c['id'].replace('-', '_')}": c["name"]
             for c in active_connections if c["type"] in _prefix
@@ -253,6 +258,15 @@ def chat(body: ChatRequest, user: dict = Depends(get_current_user)):
 @router.get("/conversations")
 def list_conversations(user: dict = Depends(get_current_user)):
     return supabase_service.list_conversations(user["id"])
+
+
+@router.delete("/conversations/{conv_id}")
+def delete_conversation(conv_id: str, user: dict = Depends(get_current_user)):
+    conv = supabase_service.get_conversation(conv_id)
+    if not conv or conv["user_id"] != user["id"]:
+        raise HTTPException(status_code=403, detail="Sin acceso a esta conversación")
+    supabase_service.delete_conversation(conv_id)
+    return {"message": "Conversación eliminada"}
 
 
 @router.get("/conversations/{conv_id}/messages")

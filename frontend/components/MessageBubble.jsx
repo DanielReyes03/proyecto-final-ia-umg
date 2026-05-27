@@ -11,7 +11,7 @@ function ToolCallBadge({ tc }) {
         : 'bg-red-500/15 text-red-400 border-red-500/20'
     }`}>
       {tc.success ? <CheckCircle size={10} /> : <XCircle size={10} />}
-      {tc.display_name || tc.tool_name.replace(/^(query_postgresql_|query_sqlserver_|call_rest_api_)/, '')}
+      {tc.display_name || tc.tool_name.replace(/^(query_postgresql_|query_sqlserver_|call_rest_api_|search_knowledge_base_)/, '')}
       {tc.duration_ms && <span className="opacity-60 ml-0.5">{tc.duration_ms}ms</span>}
     </span>
   )

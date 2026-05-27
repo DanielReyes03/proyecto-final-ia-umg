@@ -1,6 +1,6 @@
 import logging
 from services.encryption_service import decrypt_config
-from tools import postgresql_tool, sqlserver_tool, rest_tool
+from tools import postgresql_tool, sqlserver_tool, rest_tool, rag_tool
 
 logger = logging.getLogger("gerente_ia.tool_registry")
 
@@ -90,6 +90,22 @@ def build_tools(active_connections: list[dict]) -> tuple[list[dict], dict]:
                 return executor
 
             executor_map[tool_name] = make_rest_executor(config)
+
+        # ── Knowledge Base (RAG) ────────────────────────────────────────────────
+        elif conn_type == "knowledge_base":
+            doc_count = len(rag_tool.list_documents(conn_id))
+            logger.info(f"  [{conn_name}] Knowledge base — {doc_count} documentos indexados")
+
+            tool_def  = rag_tool.build_tool_definition(conn_id, conn_name, doc_count)
+            tool_name = tool_def["function"]["name"]
+            tools.append(tool_def)
+
+            def make_kb_executor(cid):
+                def executor(inputs: dict) -> dict:
+                    return rag_tool.search(cid, inputs.get("query", ""))
+                return executor
+
+            executor_map[tool_name] = make_kb_executor(conn_id)
 
         else:
             logger.warning(f"Unknown connection type '{conn_type}' for '{conn_name}' — skipped")

@@ -1,9 +1,9 @@
 'use client'
-import { Database, Server, Globe } from 'lucide-react'
+import { Database, Server, Globe, BookOpen } from 'lucide-react'
 
-const icons = { postgresql: Database, sqlserver: Server, rest_api: Globe }
-const labels = { postgresql: 'PostgreSQL', sqlserver: 'SQL Server', rest_api: 'REST API' }
-const colors = { postgresql: 'text-sky-400', sqlserver: 'text-orange-400', rest_api: 'text-purple-400' }
+const icons = { postgresql: Database, sqlserver: Server, rest_api: Globe, knowledge_base: BookOpen }
+const labels = { postgresql: 'PostgreSQL', sqlserver: 'SQL Server', rest_api: 'REST API', knowledge_base: 'Base de Conocimiento' }
+const colors = { postgresql: 'text-sky-400', sqlserver: 'text-orange-400', rest_api: 'text-purple-400', knowledge_base: 'text-emerald-400' }
 
 export default function ConnectionCard({ connection, active, onToggle }) {
   const Icon = icons[connection.type] || Database
