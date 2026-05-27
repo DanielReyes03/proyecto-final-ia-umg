@@ -28,6 +28,7 @@ export default function ChatPage() {
     send,
     loadConversation,
     startNewConversation,
+    deleteConversation,
   } = useChat(activeIds)
 
   const handleLogout = () => {
@@ -42,6 +43,7 @@ export default function ChatPage() {
         currentConvId={currentConvId}
         onSelectConv={loadConversation}
         onNewConv={startNewConversation}
+        onDeleteConv={deleteConversation}
         connections={connections}
         activeIds={activeIds}
         onToggleConnection={toggleConnection}

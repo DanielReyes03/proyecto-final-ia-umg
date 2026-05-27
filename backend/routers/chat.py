@@ -260,6 +260,15 @@ def list_conversations(user: dict = Depends(get_current_user)):
     return supabase_service.list_conversations(user["id"])
 
 
+@router.delete("/conversations/{conv_id}")
+def delete_conversation(conv_id: str, user: dict = Depends(get_current_user)):
+    conv = supabase_service.get_conversation(conv_id)
+    if not conv or conv["user_id"] != user["id"]:
+        raise HTTPException(status_code=403, detail="Sin acceso a esta conversación")
+    supabase_service.delete_conversation(conv_id)
+    return {"message": "Conversación eliminada"}
+
+
 @router.get("/conversations/{conv_id}/messages")
 def get_messages(conv_id: str, user: dict = Depends(get_current_user)):
     conv = supabase_service.get_conversation(conv_id)

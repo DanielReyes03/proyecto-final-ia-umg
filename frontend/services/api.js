@@ -57,6 +57,9 @@ export const sendMessage = (message, conversationId, activeConnectionIds) =>
 export const getConversations = () =>
   api.get('/chat/conversations').then((r) => r.data)
 
+export const deleteConversation = (convId) =>
+  api.delete(`/chat/conversations/${convId}`).then((r) => r.data)
+
 export const getMessages = (convId) =>
   api.get(`/chat/conversations/${convId}/messages`).then((r) => r.data)
 

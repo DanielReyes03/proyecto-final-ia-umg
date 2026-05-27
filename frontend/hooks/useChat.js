@@ -1,6 +1,6 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
-import { sendMessage, getConversations, getMessages } from '@/services/api'
+import { sendMessage, getConversations, getMessages, deleteConversation as apiDeleteConversation } from '@/services/api'
 
 export function useChat(activeConnectionIds) {
   const [conversations, setConversations] = useState([])
@@ -34,6 +34,15 @@ export function useChat(activeConnectionIds) {
     setCurrentConvId(null)
     setMessages([])
   }, [])
+
+  const deleteConversation = useCallback(async (convId) => {
+    await apiDeleteConversation(convId)
+    if (currentConvId === convId) {
+      setCurrentConvId(null)
+      setMessages([])
+    }
+    setConversations((prev) => prev.filter((c) => c.id !== convId))
+  }, [currentConvId])
 
   const send = useCallback(async (text) => {
     if (!text.trim() || loading) return
@@ -102,6 +111,7 @@ export function useChat(activeConnectionIds) {
 
   return {
     conversations, currentConvId, messages, pendingTools,
-    loading, error, send, loadConversation, startNewConversation, fetchConversations,
+    loading, error, send, loadConversation, startNewConversation,
+    fetchConversations, deleteConversation,
   }
 }
