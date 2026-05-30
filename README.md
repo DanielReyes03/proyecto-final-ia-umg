@@ -10,7 +10,7 @@ Proyecto académico desarrollado para el curso de Inteligencia Artificial Aplica
 
 | Nombre | Teléfono | Rol |
 |---|---|---|
-| William Manuel Garcia Gonzalez | 090-22-3022 | Líder de proyecto |
+| William Manuel Garcia Gonzalez | 090-22-3022| Líder de proyecto |
 | Fredy Jose Daniel Reyes Saban | 090-22-9800 | Desarrollo |
 | Jose Pablo Medina Gonzalez | 090-22-2592 | Desarrollo |
 
